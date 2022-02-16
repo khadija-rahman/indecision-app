@@ -5,8 +5,10 @@
   "author": "Khadija Rahman",
   "license": "MIT",
   "dependencies": {
+    "babel-cli": "6.24.1",
     "babel-preset-env": "1.5.2",
-    "babel-preset-react": "6.24.1"
+    "babel-preset-react": "6.24.1",
+    "live-server": "^1.2.1"
   },
   "repository": "https://github.com/khadija-rahman/indecision-app"
 }

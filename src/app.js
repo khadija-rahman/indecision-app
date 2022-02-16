@@ -6,29 +6,27 @@ class IndecisionApp extends React.Component {
     this.handleAddOption = this.handleAddOption.bind(this);
     this.handleDeleteOption = this.handleDeleteOption.bind(this);
     this.state = {
-      options: props.options,
+      options: [],
     };
   }
-
+  // componentDidMount/updateUnmount only manipulate data in the browser/local storage
   componentDidMount() {
-    console.log("fetching data");
-    const json = localStorage.getItem("options");
-    const options = JSON.parse(json);
+    try {
+      const json = localStorage.getItem("options");
+      const options = JSON.parse(json);
 
-    if (options) {
-      this.setState(() => ({ options }));
-    }
+      //updates option to the options array
+      if (options) {
+        this.setState(() => ({ options }));
+      }
+    } catch (e) {}
   }
 
-  componentDidUpdate(prevState) {
-    // also access to arguements access to  prevProps and prevState
-    // which can be passed into state and props
-
-    // access to this.state and this.props
+  componentDidUpdate(prevProp, prevState) {
+    // check if an option is entered otherwise don't update
     if (prevState.options.length !== this.state.options.length) {
       const json = JSON.stringify(this.state.options);
       localStorage.setItem("options", json);
-      console.log("saving datas");
     }
   }
 
@@ -41,21 +39,23 @@ class IndecisionApp extends React.Component {
     this.setState(() => ({ options: [] }));
   }
 
+  handleDeleteOption(optionToRemove) {
+    this.setState((prevState) => ({
+      options: prevState.options.filter((option) => optionToRemove !== option),
+    }));
+  }
+
   handleAddOption(option) {
     if (!option) {
       return "Enter valid value to add item";
+      //if the index of option is greater than -1
+      // that means that the option exists at either index of 0 or 1 or 2 ect
     } else if (this.state.options.indexOf(option) > -1) {
       return "this option already exists";
     }
 
     this.setState((prevState) => ({
       options: prevState.options.concat(option),
-    }));
-  }
-
-  handleDeleteOption(optionToRemove) {
-    this.setState((prevState) => ({
-      options: prevState.options.filter((option) => optionToRemove !== option),
     }));
   }
 
@@ -82,10 +82,6 @@ class IndecisionApp extends React.Component {
     );
   }
 }
-
-IndecisionApp.defaultProps = {
-  options: [],
-};
 
 const Header = (props) => {
   return (
@@ -114,6 +110,9 @@ const Options = (props) => {
   return (
     <div>
       <button onClick={props.handleDeleteOptions}>Remove all</button>
+      {props.options.length === 0 && (
+        <p>Please add an option to get started!</p>
+      )}
       {props.options.map((option) => (
         <Option
           key={option}
@@ -153,10 +152,13 @@ class AddOption extends React.Component {
     e.preventDefault();
 
     const option = e.target.elements.option.value.trim();
-    e.target.elements.option.value = "";
     const error = this.props.handleAddOption(option);
 
     this.setState(() => ({ error }));
+
+    if (!error) {
+      e.target.elements.option.value = "";
+    }
   }
 
   render() {

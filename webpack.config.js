@@ -1,11 +1,23 @@
 // entry point where does out application kick off
 const path = require("path");
+
 module.exports = {
   entry: "./src/app.js",
   output: {
-    path: "/Users/khadijarahman/Documents/code/indecision-app/public",
+    path: path.join(__dirname, "public"),
     filename: "bundle.js",
   },
+  module: {
+    rules: [
+      {
+        loader: "babel-loader",
+        test: /\.js$/,
+        exclude: /node_modules/,
+      },
+    ],
+  },
+  devtool: "cheap-module-eval-source-map",
+  devServer: {
+    contentBase: path.join(__dirname, "public"),
+  },
 };
-
-//where to output the final bundle file

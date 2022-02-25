@@ -66,7 +66,7 @@ class IndecisionApp extends React.Component {
   }
 
   render() {
-    const subtitle = "Put life in the hands of a computer";
+    const subtitle = "Put your life in the hands of a computer";
     console.log(this.state);
     return (
       <div>
